@@ -1,2 +1,363 @@
+
+[![Arduino CI](https://github.com/RobTillaart/LTC2942_RT/workflows/Arduino%20CI/badge.svg)](https://github.com/marketplace/actions/arduino_ci)
+[![Arduino-lint](https://github.com/RobTillaart/LTC2942_RT/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/RobTillaart/LTC2942_RT/actions/workflows/arduino-lint.yml)
+[![JSON check](https://github.com/RobTillaart/LTC2942_RT/actions/workflows/jsoncheck.yml/badge.svg)](https://github.com/RobTillaart/LTC2942_RT/actions/workflows/jsoncheck.yml)
+[![GitHub issues](https://img.shields.io/github/issues/RobTillaart/LTC2942_RT.svg)](https://github.com/RobTillaart/LTC2942_RT/issues)
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/LTC2942_RT/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/RobTillaart/LTC2942_RT.svg?maxAge=3600)](https://github.com/RobTillaart/LTC2942_RT/releases)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/robtillaart/library/LTC2942.svg)](https://registry.platformio.org/libraries/RobTillaart/LTC2942_RT)
+
+
 # LTC2942
-Arduino library for the LTC2942 battery charge and discharge (Coulomb) meter.
+
+Arduino library for the I2C LTC2942 battery charge and discharge (Coulomb) meter.
+
+
+## Description
+
+**Experimental**
+
+Read the datasheet as this library is **work in progress**.
+
+This library is to use the LTC2942 Coulomb meter.
+The LTC2942 indicates the accumulated charge and discharge of a battery
+so you can see how "full" the battery is.
+
+The device is in essence a current sensor, and integrates the measured
+current with high resolution over time. 
+This is both done when the battery is loading and unloading.
+
+The LTC2942 also provides voltage and temperature of the device.
+If the LTC2942 is very close to the battery it is an indication for
+the battery temperature.
+
+The device allows to set a low/high charge threshold.
+These can trigger an alarm when the battery is nearly full / empty.
+The device has also thresholds for voltage and temperature.
+The device has a status register that shows the different alarms supported.
+
+The LTC2942 can be configured.
+Read the datasheet to understand how to make a correct workable configuration
+for your project setup.
+
+Accuracy: ~1%
+
+|    type    |  temperature  |
+|:----------:|:--------------|
+|  LTC2942C  |  0°C to 70°C
+|  LTC2942I  |  –40°C to 85°C
+
+
+**Library is not tested with hardware yet.**
+
+Feedback as always is welcome.
+
+
+### Datasheet warning
+
+_Do not apply this product to safety protection devices or emergency stop equipment,
+and any other applications that may cause personal injury due to the product's failure._
+
+
+### Calibration
+
+Read datasheet, page ??
+
+TODO elaborate.
+
+About calibration...
+- load accu full
+- setCharge(mAh)
+
+
+### Hardware
+
+Check datasheet!
+
+```
+         TOPVIEW LTC2942 (DCB)
+           +---------------+
+   SENSE + | 1           6 | SENSE -
+       GND | 2           5 | AL/CC
+       SCL | 3           4 | SDA
+           | -           - |
+           +---------------+
+```
+
+
+### Compatibles
+
+The LTC2942 has different registers compared to the LTC2941/43/44.
+
+
+### Related
+
+Current sensors
+- https://github.com/RobTillaart/ACS712 - ACS series current sensor
+- https://github.com/RobTillaart/INA226 - family of current and power sensors
+- https://github.com/RobTillaart/LTC2941 - charge only 
+- https://github.com/RobTillaart/LTC2942_RT - this library charge, voltage, temperature
+
+Other
+- https://github.com/Seeed-Studio/Seeed_LTC2941
+
+
+### Tested
+
+Library is not tested with hardware yet.
+
+TODO: Test on Arduino UNO and ESP32
+
+
+## I2C
+
+### I2C Address
+
+The device has a fixed I2C address of 0x64 (100) so only one sensor per I2C bus can be used.
+Do not forget appropriate pull up resistors on the I2C SDA and SCL lines.
+
+If one needs more sensors there are some options.
+- One could use an I2C multiplexer (see below)
+- One could use an MCU with multiple I2C buses.
+- One could use a (Two-Wire compatible) SW I2C (outside scope of this library).
+
+Using the VCC as a Chip Select is not advised as the LTC2942
+has a preheat time of 2 minutes.
+Every time the power is shut off the pre-heat would run again internally.
+It is unclear what effect this has on the lifetime and quality of the sensor.
+
+
+### I2C multiplexing
+
+Sometimes you need to control more devices than possible with the default
+address range the device provides.
+This is possible with an I2C multiplexer e.g. TCA9548 which creates up
+to eight channels (think of it as I2C subnets) which can use the complete
+address range of the device.
+
+Drawback of using a multiplexer is that it takes more administration in
+your code e.g. which device is on which channel.
+This will slow down the access, which must be taken into account when
+deciding which devices are on which channel.
+Also note that switching between channels will slow down other devices
+too if they are behind the multiplexer.
+
+- https://github.com/RobTillaart/TCA9548
+
+
+### I2C Performance
+
+Only test **getCharge()** as that is the main function.
+
+
+|  Clock     |  time (us)  |  Notes  |
+|:----------:|:-----------:|:--------|
+|   100 KHz  |             |  default
+|   200 KHz  |             |
+|   400 KHz  |             |
+|   600 KHz  |             |
+|   900 KHz  |             |  max datasheet
+
+
+TODO: run performance sketch on hardware.
+
+
+## Interface
+
+```cpp
+#include "LTC2942.h"
+```
+
+### Constructor
+
+- **LTC2942(TwoWire \*wire = &Wire)** optional select I2C bus.
+- **bool begin(float mAh, float RSense)**
+Sets the capacity of the battery and the used resistor.
+Verifies these are in range.
+Calculates the pre-scaler and the QLSB from these numbers
+Finally it checks if the device address is visible on the I2C bus.
+- **bool isConnected()** Checks if device address can be found on I2C bus.
+- **uint8_t getAddress()** Returns the fixed address 0x64 (100).
+
+The user has to make sure that: ```RSense < 50mV / Imax```.
+The library does not check this, however getMaxCurrent() calculates
+the Imax given the resistor set in begin().
+
+The user has to make sure that ```RSense > 0.005 Ohm```
+
+
+### Status
+
+See datasheet for details.
+
+- **bool getStatus(uint8_t &status)**
+
+Status byte, see datasheet
+
+|  bit  |  description        |  notes  |
+|:-----:|:--------------------|:--------|
+|   0   |  underVoltage alert |
+|   1   |  Vbattery alert     |
+|   2   |  charge alert low   |
+|   3   |  charge alert high  |
+|   4   |  not used, always 0 |
+|   5   |  under/overflow     |
+|   6   |  not used, always 0 |
+|   7   |  chip ID, always 0  |  LTC2941 returns 1
+
+
+### Control register
+
+See datasheet for details.
+
+- **bool setControl(uint8_t ALCC,  uint8_t prescaler,  uint8_t shutDown, uint8_t ADCMode)**
+- **bool getControl(uint8_t &ALCC, uint8_t &prescaler, uint8_t &shutDown, uint8_t &ADCMode)**
+
+Control fields, see datasheet page 9.
+
+|  bit  |  description        |  range  | default |  notes  |
+|:-----:|:--------------------|:--------|:--------|:--------|
+|   0   |  Shutdown           |   0..1  |    0    |
+|  1-2  |  AL/CC configure    |   0..2  |    2    |  value 3 not allowed.
+|  3-5  |  Coulomb pre-scaler |   0..7  |    7    |  maps to 1..128
+|  6-7  |  ADCMode            |   0..3  |    0    |
+
+
+|  AL/CC  |  meaning  |
+|:-------:|:----------|
+|    0    |  disabled
+|    1    |  Charge Complete Mode
+|    2    |  Alert Mode
+|    3    |  not allowed
+
+
+|  ADCMode  |  meaning  |
+|:---------:|:----------|
+|     0     |  sleep  (default)
+|     1     |  single temperature reading
+|     2     |  single voltage reading
+|     3     |  automatic temperature + voltage
+
+
+### Charge
+
+See datasheet page 10-11 for details, especially how to align
+the battery and the internal counter.
+
+The functions return false in case of an error.
+
+- **bool setCharge(uint16_t charge)** raw register access.
+- **bool getCharge(uint16_t &charge)** raw register access.
+- **bool setCharge(float charge)** charge in mAh, wrapper.
+- **bool getCharge(float &charge)** charge in mAh, wrapper.
+- **bool getPercentageFull(float &percentage)** return 0..100%,
+compares with mAh parameter from begin().
+- **float getQLSB()** charge in mAh of single bit.
+Conversion factor determined by RSense and mAh from **begin()**
+
+Note: at any moment the user has to detect the battery is completely
+full (or empty) and set the appropriate charge in the device.
+The device has no means to know when the battery is full.
+
+
+### Threshold Charge
+
+See datasheet for details.
+
+High threshold should be higher than low threshold, otherwise the
+device is always in alarm state.
+
+- **bool setRawThresholdHigh(uint16_t thresholdHigh)**
+- **bool getRawThresholdHigh(uint16_t &thresholdHigh)**
+- **bool setRawThresholdLow(uint16_t thresholdLow)**
+- **bool getRawThresholdLow(uint16_t &thresholdLow)**
+
+Same in Coulombs
+- **bool setThresholdHigh(float thresholdHigh)**
+- **bool getThresholdHigh(float &thresholdHigh)**
+- **bool setThresholdLow(float thresholdLow)**
+- **bool getThresholdLow(float &thresholdLow)**
+
+
+### Voltage
+
+See datasheet for details.
+
+- **bool getVoltage(float &volts)**
+
+
+High threshold should be higher than low threshold, otherwise the
+device is always in alarm state.
+
+- **bool setVoltageThresholdHigh(int8_t thresholdHigh)**
+- **bool getVoltageThresholdHigh(int8_t &thresholdHigh)**
+- **bool setVoltageThresholdLow(int8_t thresholdLow)**
+- **bool getVoltageThresholdLow(int8_t &thresholdLow)**
+
+
+### Temperature
+
+See datasheet for details.
+
+- **bool getTemperature(float &temperature)**
+
+
+High threshold should be higher than low threshold, otherwise the
+device is always in alarm state.
+
+- **bool setTemperatureThresholdHigh(int8_t thresholdHigh)**
+- **bool getTemperatureThresholdHigh(int8_t &thresholdHigh)**
+- **bool setTemperatureThresholdLow(int8_t thresholdLow)**
+- **bool getTemperatureThresholdLow(int8_t &thresholdLow)**
+
+
+### Debug
+
+- **int getLastError()** returns last error of low level communication.
+- **uint8_t getPrescaler()** idem
+- **float getMaxCurrent()** calculates the max current given RSense.
+
+
+|  error  |  description  |
+|:-------:|:--------------|
+|   0x00  |  LTC2942_OK
+|   0x10  |  LTC2942_NOT_READY
+|   0x11  |  LTC2942_REQUEST_ERROR1
+|   0x12  |  LTC2942_REQUEST_ERROR2
+|   0x13  |  LTC2942_CONTROL_ERROR
+|   0x14  |  LTC2942_RSENSE_ERROR
+|   0x15  |  LTC2942_MAH_ERROR
+|   0x16  |  LTC2942_PRESCALER_ERROR
+|   0xFF  |  LTC2942_OTHER_ERROR
+
+
+## Future
+
+#### Must
+
+- improve documentation
+  - how to calibrate (resistor, prescaler, ...)
+- fix TODO in documentation and code
+- get hardware to test
+  - verify API
+- keep in sync with LTC2941 where possible.
+
+#### Should
+
+
+#### Could
+
+
+#### Wont
+
+
+## Support
+
+If you appreciate my libraries, you can support the development and maintenance.
+Improve the quality of the libraries by providing issues and Pull Requests, or
+donate through PayPal or GitHub sponsors.
+
+Thank you,
+
+
