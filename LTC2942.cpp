@@ -55,11 +55,11 @@ bool LTC2942::begin(float mAh, float RSense)
     return false;
   }
   //  TODO check limit page 10
-  if ((mAh < 100) || (mAh > 5500))
-  {
-    _error = LTC2942_MAH_ERROR;
-    return false;
-  }
+  //  if ((mAh < 100) || (mAh > 5500))
+  //  {
+  //    _error = LTC2942_MAH_ERROR;
+  //    return false;
+  //  }
 
   //  Page 11, calculate and verify pre-scaler
   float tmp = 128 * mAh /(65535 * 0.085f) * (RSense / 0.050f);
