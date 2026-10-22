@@ -54,7 +54,8 @@ bool LTC2942::begin(float mAh, float RSense)
     _error = LTC2942_RSENSE_ERROR;
     return false;
   }
-  if ((mAh < 100) || (mAh > 5500))  //  check limit
+  //  TODO check limit page 10
+  if ((mAh < 100) || (mAh > 5500))
   {
     _error = LTC2942_MAH_ERROR;
     return false;
@@ -88,10 +89,10 @@ bool LTC2942::begin(float mAh, float RSense)
   _QLSB = _calculateQLSB();
 
   //  write pre-scaler to device.
-  int ps;
+  uint8_t ps;
   for (ps = 0; ps < 8; ps++)
   {
-    if ((1 << ps) == _prescaler) break;
+    if ((1UL << ps) == _prescaler) break;
   }
   uint8_t control = 0;   //  no error check here yet.
   _getControl(control);  //  read current configuration

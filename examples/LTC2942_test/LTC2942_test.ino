@@ -129,18 +129,15 @@ void test_voltage()
   Serial.println();
   Serial.println(__FUNCTION__);
   Serial.print("getVoltage: \t");
-  //  readOnly
   float volts;
   LTC.getVoltage(volts);
   Serial.println(volts);
 
   Serial.print("getVoltageThresholdHigh: \t");
-  //  save old value to restore
   LTC.getVoltageThresholdHigh(volts);
   Serial.println(volts);
 
   Serial.print("getVoltageThresholdLow: \t");
-  //  save old value to restore
   LTC.getVoltageThresholdLow(volts);
   Serial.println(volts);
 }
@@ -150,18 +147,15 @@ void test_temperature()
   Serial.println();
   Serial.println(__FUNCTION__);
   Serial.print("getTemperature: \t");
-  //  readOnly
   float temperature;
   LTC.getTemperature(temperature);
   Serial.println(temperature);
 
   Serial.print("getTemperatureThresholdHigh: \t");
-  //  save old value to restore
   LTC.getTemperatureThresholdHigh(temperature);
   Serial.println(temperature);
 
   Serial.print("getTemperatureThresholdLow: \t");
-  //  save old value to restore
   LTC.getTemperatureThresholdLow(temperature);
   Serial.println(temperature);
 }
