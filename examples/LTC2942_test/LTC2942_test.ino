@@ -3,7 +3,7 @@
 //  AUTHOR: Rob Tillaart
 // PURPOSE: test core functions
 //     URL: https://github.com/RobTillaart/LTC2942_RT
-//
+
 
 #include "LTC2942.h"
 
@@ -165,5 +165,6 @@ void test_temperature()
   LTC.getTemperatureThresholdLow(temperature);
   Serial.println(temperature);
 }
+
 
 //  -- END OF FILE --
