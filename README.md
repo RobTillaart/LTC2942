@@ -107,9 +107,9 @@ Other
 
 ### Tested
 
-Library is not tested with hardware yet.
+**Library is not tested with hardware yet.**
 
-TODO: Test on Arduino UNO and ESP32
+TODO: Test on Arduino UNO and ESP32.
 
 
 ## I2C
@@ -124,9 +124,7 @@ If one needs more sensors there are some options.
 - One could use an MCU with multiple I2C buses.
 - One could use a (Two-Wire compatible) SW I2C (outside scope of this library).
 
-Using the VCC as a Chip Select is not advised as the LTC2942
-has a preheat time of 2 minutes.
-Every time the power is shut off the pre-heat would run again internally.
+Using the VCC as a Chip Select is not advised for the LTC2942.
 It is unclear what effect this has on the lifetime and quality of the sensor.
 
 
@@ -191,11 +189,11 @@ The user has to make sure that ```RSense > 0.005 Ohm```
 
 ### Status
 
-See datasheet for details.
+For details see datasheet page 9.
 
 - **bool getStatus(uint8_t &status)**
 
-Status byte, see datasheet
+Status byte
 
 |  bit  |  description        |  notes  |
 |:-----:|:--------------------|:--------|
@@ -211,12 +209,12 @@ Status byte, see datasheet
 
 ### Control register
 
-See datasheet for details.
+For details see datasheet page 9.
 
 - **bool setControl(uint8_t ALCC,  uint8_t prescaler,  uint8_t shutDown, uint8_t ADCMode)**
 - **bool getControl(uint8_t &ALCC, uint8_t &prescaler, uint8_t &shutDown, uint8_t &ADCMode)**
 
-Control fields, see datasheet page 9.
+Control fields
 
 |  bit  |  description        |  range  | default |  notes  |
 |:-----:|:--------------------|:--------|:--------|:--------|
@@ -343,7 +341,7 @@ device is always in alarm state.
 - fix TODO in documentation and code
 - get hardware to test
   - verify API
-- keep in sync with LTC2941 where possible.
+- keep in sync with LTC294X where possible.
 
 #### Should
 
