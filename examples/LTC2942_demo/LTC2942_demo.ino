@@ -2,7 +2,7 @@
 //    FILE: LTC2942_demo.ino
 //  AUTHOR: Rob Tillaart
 // PURPOSE: test basic charge reading
-//     URL: https://github.com/RobTillaart/LTC2942
+//     URL: https://github.com/RobTillaart/LTC2942_RT
 
 
 #include "LTC2942.h"

@@ -3,7 +3,7 @@
 //  AUTHOR: Rob Tillaart
 //    DATE: 2026-09-20
 // PURPOSE: unit tests for the LTC2942 library
-//     URL: https://github.com/RobTillaart/LTC2942
+//     URL: https://github.com/RobTillaart/LTC2942_RT
 //          https://github.com/Arduino-CI/arduino_ci/blob/master/REFERENCE.md
 //
 
@@ -69,6 +69,8 @@ unittest(test_constructor)
 
   assertEqual(0x64, LTC.getAddress());
   assertEqual(LTC2942_OK, LTC.getLastError());
+  assertEqual(128, LTC.getPrescaler());
+  assertEqualFloat(1, LTC.getMaxCurrent(), 0.001);
 }
 
 

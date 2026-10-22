@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/LTC2942_RT/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/LTC2942_RT.svg?maxAge=3600)](https://github.com/RobTillaart/LTC2942_RT/releases)
-[![PlatformIO Registry](https://badges.registry.platformio.org/packages/robtillaart/library/LTC2942.svg)](https://registry.platformio.org/libraries/RobTillaart/LTC2942_RT)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/robtillaart/library/LTC2942.svg)](https://registry.platformio.org/libraries/RobTillaart/LTC2942)
 
 
 # LTC2942
@@ -100,6 +100,7 @@ Current sensors
 - https://github.com/RobTillaart/LTC2942_RT - this library charge, voltage, temperature
 
 Other
+- https://wiki.seeedstudio.com/Grove-Coulomb_Counter_3.3V_to_5V-LTC2941/
 - https://github.com/Seeed-Studio/Seeed_LTC2941
 
 

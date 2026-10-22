@@ -2,7 +2,7 @@
 //    FILE: LTC2942_calibrate.ino
 //  AUTHOR: Rob Tillaart
 // PURPOSE: test calibration routine in begin()
-//     URL: https://github.com/RobTillaart/LTC2942
+//     URL: https://github.com/RobTillaart/LTC2942_RT
 //
 //  this sketch checks if a {Rsense, mAh} combination makes sense.
 //  read datasheet page 10,11

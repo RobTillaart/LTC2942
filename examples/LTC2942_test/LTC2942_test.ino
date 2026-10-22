@@ -1,10 +1,9 @@
 //
 //    FILE: LTC2942_test.ino
 //  AUTHOR: Rob Tillaart
-// PURPOSE: simple register test
-//     URL: https://github.com/RobTillaart/LTC2942
+// PURPOSE: test core functions
+//     URL: https://github.com/RobTillaart/LTC2942_RT
 //
-//  TODO voltage and temperature
 
 #include "LTC2942.h"
 
@@ -28,6 +27,24 @@ void setup()
   Serial.print("ADDR:\t");
   Serial.println(LTC.getAddress());
 
+  test_stat();
+  test_charge();
+  test_voltage();
+  test_temperature();
+
+  Serial.println("\ndone");
+}
+
+void loop()
+{
+}
+
+//////////////////////////////////////////////////
+
+void test_stat()
+{
+  Serial.println();
+  Serial.println(__FUNCTION__);
   Serial.print("STAT \tCONTROL\n");
   uint8_t status;
   LTC.getStatus(status);
@@ -45,8 +62,12 @@ void setup()
   Serial.print(shutdown);
   Serial.print("\t");
   Serial.println(ADCMode);
+}
 
-
+void test_charge()
+{
+  Serial.println();
+  Serial.println(__FUNCTION__);
   Serial.print("getCharge: \t");
   //  save old value to restore
   uint16_t val;
@@ -101,16 +122,48 @@ void setup()
   }
   //  restore
   LTC.setRawChargeThresholdLow(val ^ 0xFFFF);
-
-
-  Serial.println("\ndone");
 }
 
-
-void loop()
+void test_voltage()
 {
+  Serial.println();
+  Serial.println(__FUNCTION__);
+  Serial.print("getVoltage: \t");
+  //  readOnly
+  float volts;
+  LTC.getVoltage(volts);
+  Serial.println(volts);
 
+  Serial.print("getVoltageThresholdHigh: \t");
+  //  save old value to restore
+  LTC.getVoltageThresholdHigh(volts);
+  Serial.println(volts);
+
+  Serial.print("getVoltageThresholdLow: \t");
+  //  save old value to restore
+  LTC.getVoltageThresholdLow(volts);
+  Serial.println(volts);
 }
 
+void test_temperature()
+{
+  Serial.println();
+  Serial.println(__FUNCTION__);
+  Serial.print("getTemperature: \t");
+  //  readOnly
+  float temperature;
+  LTC.getTemperature(temperature);
+  Serial.println(temperature);
+
+  Serial.print("getTemperatureThresholdHigh: \t");
+  //  save old value to restore
+  LTC.getTemperatureThresholdHigh(temperature);
+  Serial.println(temperature);
+
+  Serial.print("getTemperatureThresholdLow: \t");
+  //  save old value to restore
+  LTC.getTemperatureThresholdLow(temperature);
+  Serial.println(temperature);
+}
 
 //  -- END OF FILE --
