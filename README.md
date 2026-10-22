@@ -96,8 +96,9 @@ The LTC2942 has different registers compared to the LTC2941/43/44.
 Current sensors
 - https://github.com/RobTillaart/ACS712 - ACS series current sensor
 - https://github.com/RobTillaart/INA226 - family of current and power sensors
-- https://github.com/RobTillaart/LTC2941 - charge only 
-- https://github.com/RobTillaart/LTC2942_RT - this library charge, voltage, temperature
+- https://github.com/RobTillaart/LTC2941 - charge only
+- https://github.com/RobTillaart/LTC2942_RT - charge, voltage, temperature
+- https://github.com/RobTillaart/LTC2943 - charge, voltage, temperature
 
 Other
 - https://wiki.seeedstudio.com/Grove-Coulomb_Counter_3.3V_to_5V-LTC2941/
